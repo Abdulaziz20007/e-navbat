@@ -6,5 +6,7 @@
   "db_password": "rooot",
   "db_name": "e-navbat",
   "bcrypt_round": 7,
-  "otp_exp_time": 3
+  "otp_exp_time": 3,
+  "crypt_password": "MySecretPassword",
+  "iv": "asdf1234"
 }
