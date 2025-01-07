@@ -79,7 +79,7 @@ const verifyOtpClient = async (req, res) => {
       return res.status(400).send(response);
     }
 
-    if (result.otp !== otp) {
+    if (result.otp != otp) {
       const response = {
         Status: "Failed",
         Details: "OTP not matched",
@@ -87,7 +87,41 @@ const verifyOtpClient = async (req, res) => {
       return res.status(400).send(response);
     }
 
-    // res.send(decodedData);
+    await pool.query(`UPDATE otp SET verified=$2 where id=$1`, [
+      result.id,
+      true,
+    ]);
+
+    const clientResult = await pool.query(
+      `SELECT * FROM clients WHERE phone_number = $1`,
+      [phone_number]
+    );
+
+    let client_id, client_status;
+    if (clientResult.rows.length == 0) {
+      const newClient = await pool.query(
+        `INSERT INTO clients(phone_number, otp_id, is_active)
+        VALUES ($1, $2, $3) RETURNING id`,
+        [phone_number, result.id, true]
+      );
+      client_id = newClient.rows[0].id;
+      client_status = "new";
+    } else {
+      client_id = clientResult.rows[0].id;
+      client_status = "old";
+      await pool.query(
+        `UPDATE clients SET otp_id = $2, is_active=true where id = $1`,
+        [client_id, result.id]
+      );
+    }
+
+    const respone = {
+      Status: "Success",
+      ClientStatus: client_status,
+      ClientId: client_id,
+    };
+
+    return res.status(200).send(respone);
   } catch (err) {
     errorHandler(err, res);
   }
