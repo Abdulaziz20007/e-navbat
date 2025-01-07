@@ -127,7 +127,22 @@ const verifyOtpClient = async (req, res) => {
   }
 };
 
+const deleteOtpById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const otp = (await pool.query(`SELECT * FROM otp`)).rows[0];
+    if (!otp) {
+      return res.status(404).send({ msg: "otp not found" });
+    }
+    await pool.query(`DELETE FROM otp WHERE id = $1`, [id]);
+    res.status(200).send({ msg: "Done", otp });
+  } catch (err) {
+    errorHandler(err, res);
+  }
+};
+
 module.exports = {
   createOtp,
   verifyOtpClient,
+  deleteOtpById,
 };
