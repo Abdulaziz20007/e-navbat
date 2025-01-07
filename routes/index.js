@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const clientRouter = require("./client.routes");
-const specialistRouter = require("./specialistt.routes");
+const specialistRouter = require("./specialist.routes");
 const adminRouter = require("./admin.routes");
 const otpRouter = require("./otp.routes");
 
