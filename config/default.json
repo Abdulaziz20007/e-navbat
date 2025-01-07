@@ -5,5 +5,6 @@
   "db_usermame": "postgres",
   "db_password": "rooot",
   "db_name": "e-navbat",
-  "bcrypt_round": 7
+  "bcrypt_round": 7,
+  "otp_exp_time": 3
 }
