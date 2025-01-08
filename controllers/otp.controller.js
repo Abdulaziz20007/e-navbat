@@ -6,6 +6,18 @@ const config = require("config");
 const { encode, decode } = require("../services/crypt");
 const addMinutesToDate = require("../helpers/add_minutes");
 const mailService = require("../services/mail.service");
+const myJwt = require("../services/jwt_service");
+const bcrypt = require("bcrypt");
+const DeviceDetector = require("node-device-detector");
+const DeviceHelper = require("node-device-detector/helper");
+const detector = new DeviceDetector({
+  clientIndexes: true,
+  deviceIndexes: true,
+  deviceAliasCode: false,
+  deviceTrusted: false,
+  deviceInfo: true,
+  maxUserAgentSize: 500,
+});
 
 const createOtp = async (req, res) => {
   try {
@@ -118,10 +130,42 @@ const verifyOtpClient = async (req, res) => {
       );
     }
 
+    const payload = {
+      id: client_id,
+      status: client_status,
+      phone_number: phone_number,
+    };
+
+    const tokens = myJwt.generateTokens(payload);
+    const hashedRefreshToken = bcrypt.hashSync(
+      tokens.refreshToken,
+      config.get("bcrypt_round")
+    );
+    const userAgent = req.headers["user-agent"];
+    const resultAgent = detector.detect(userAgent);
+    console.log("result parse", resultAgent);
+    await pool.query(
+      `INSERT INTO tokens (table_name, user_id, user_os, user_device, user_browser, hashed_refresh_token)
+      VALUES($1, $2, $3, $4, $5, $6)`,
+      [
+        "clients",
+        client_id,
+        resultAgent.os,
+        resultAgent.device,
+        resultAgent.client,
+        hashedRefreshToken,
+      ]
+    );
+
+    res.cookie("refreshToken", tokens.refreshToken, {
+      maxAge: config.get("refresh_token_ms"),
+      httpOnly: true,
+    });
     const respone = {
       Status: "Success",
       ClientStatus: client_status,
       ClientId: client_id,
+      AccessToken: tokens.accessToken,
     };
 
     return res.status(200).send(respone);

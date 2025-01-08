@@ -10,12 +10,12 @@ CREATE TABLE admin (
 
 CREATE TABLE token (
     id SERIAL PRIMARY KEY,
-    table_name VARCHAR(100) NOT NULL,
-    user_id INTEGER NOT NULL,
-    user_os VARCHAR(100),
-    user_device VARCHAR(100),
-    user_browser VARCHAR(100),
-    hashed_refresh_token VARCHAR(255) NOT NULL
+    table_name VARCHAR(255),
+    user_id INTEGER,
+    user_os VARCHAR(2000),
+    user_device VARCHAR(1000), 
+    user_browser VARCHAR(1000),
+    hashed_refresh_token VARCHAR(2000)
 );
 
 CREATE TABLE otp (
@@ -103,9 +103,6 @@ CREATE TABLE specialists (
     show_phone_number BOOLEAN DEFAULT false,
     otp_id UUID
 );
-
-ALTER TABLE token
-ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES admin(id);
 
 ALTER TABLE clients
 ADD CONSTRAINT fk_client_otp FOREIGN KEY (otp_id) REFERENCES otp(id);

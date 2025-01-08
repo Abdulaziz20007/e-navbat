@@ -10,7 +10,12 @@
   "crypt_password": "MySecretPassword",
   "iv": "asdf1234",
   "smtp_password": "4ywPS7xCRM0y6U4Kkufj",
-  "smtp_user": "niggelegram@mail.ru",
+  "smtp_user": "tenmemberinteam@mail.ru",
   "smtp_host": "smtp.mail.ru",
-  "smtp_port": 465
+  "smtp_port": 465,
+  "access_key": "AuthorAccessTokenSecretKey",
+  "refresh_key": "AuthorRefreshTokenSecretKey",
+  "access_time": "15h",
+  "refresh_time": "15d",
+  "refresh_token_ms": 1296000000
 }

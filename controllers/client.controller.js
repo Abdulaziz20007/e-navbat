@@ -1,5 +1,15 @@
 const pool = require("../config/db");
 const { errorHandler } = require("../helpers/error_handler");
+const DeviceDetector = require("node-device-detector");
+const DeviceHelper = require("node-device-detector/helper");
+const detector = new DeviceDetector({
+  clientIndexes: true,
+  deviceIndexes: true,
+  deviceAliasCode: false,
+  deviceTrusted: false,
+  deviceInfo: true,
+  maxUserAgentSize: 500,
+});
 
 const addClient = async (req, res) => {
   try {
@@ -18,6 +28,12 @@ const addClient = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
+    const userAgent = req.headers["user-agent"];
+    const result = detector.detect(userAgent);
+    console.log("result parse", result);
+    console.log(DeviceHelper.isMobile(result));
+    
+
     const clients = await pool.query(`SELECT * FROM clients`);
     res.status(200).send(clients.rows);
   } catch (err) {
