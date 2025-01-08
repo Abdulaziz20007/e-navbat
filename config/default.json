@@ -8,5 +8,9 @@
   "bcrypt_round": 7,
   "otp_exp_time": 3,
   "crypt_password": "MySecretPassword",
-  "iv": "asdf1234"
+  "iv": "asdf1234",
+  "smtp_password": "4ywPS7xCRM0y6U4Kkufj",
+  "smtp_user": "niggelegram@mail.ru",
+  "smtp_host": "smtp.mail.ru",
+  "smtp_port": 465
 }

@@ -5,6 +5,7 @@ const { errorHandler } = require("../helpers/error_handler");
 const config = require("config");
 const { encode, decode } = require("../services/crypt");
 const addMinutesToDate = require("../helpers/add_minutes");
+const mailService = require("../services/mail.service");
 
 const createOtp = async (req, res) => {
   try {
@@ -28,6 +29,8 @@ const createOtp = async (req, res) => {
       phone_number,
       otp_id: newOtp.rows[0].id,
     };
+
+    await mailService.sendMailActivationCode(phone_number, otp);
 
     const encodedData = await encode(JSON.stringify(details));
     res.send({ verification_key: encodedData });
